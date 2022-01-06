@@ -30,8 +30,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
     }
 
     public static class ClassViewHolder extends RecyclerView.ViewHolder{
-TextView teamName;
-TextView sportName;
+        TextView teamName;
+        TextView sportName;
         public ClassViewHolder(@NonNull View itemView,OnItemClickListener onItemClickListener) {
             super(itemView);
             teamName = itemView.findViewById(R.id.team_tv);
