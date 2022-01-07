@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
     ArrayList<TeamItem> teamItems = new ArrayList<>();
     Toolbar toolbar;
+    DbHelper dbHelper;
 
 
     @Override
@@ -34,9 +36,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHelper = new DbHelper(this);
+
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v-> showDialog());
-
+        
+        loadData();
+        
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -46,6 +52,20 @@ public class MainActivity extends AppCompatActivity {
         classAdapter.setOnItemClickListener(position -> gotoItemActivity(position));
         setToolBar();
 
+    }
+
+    private void loadData() {
+        Cursor cursor = dbHelper.getTeamTable();
+
+        teamItems.clear();
+        while(cursor.moveToNext()){
+            int id = cursor.getInt(cursor.getColumnIndex(DbHelper.T_ID));
+            String teamName = cursor.getString(cursor.getColumnIndex(DbHelper.TEAM_NAME_KEY));
+            String sportName = cursor.getString(cursor.getColumnIndex(DbHelper.SPORT_NAME_KEY));
+
+            teamItems.add(new TeamItem(id,teamName,sportName));
+
+        }
     }
 
     private void setToolBar() {
@@ -78,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addTeam(String teamName,String sportName){
-        teamItems.add(new TeamItem( teamName,sportName));
+        long tid = dbHelper.addTeam(teamName,sportName);
+        TeamItem teamItem =  new TeamItem( teamName,sportName);
+        teamItems.add(teamItem);
         classAdapter.notifyDataSetChanged();
     }
 }

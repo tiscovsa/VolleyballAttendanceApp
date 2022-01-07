@@ -1,6 +1,8 @@
 package com.example.volleyballattendanceapp;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,8 @@ public class MyDialog extends DialogFragment{
         Dialog dialog=null;
         if(getTag().equals(TEAM_ADD_DIALOG))dialog=getAddTeamDialog();
         if(getTag().equals(STUDENT_ADD_DIALOG))dialog = getAddStudentDialog();
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dialog;
     }
 
@@ -58,7 +62,7 @@ public class MyDialog extends DialogFragment{
             String roll = roll_edt.getText().toString();
             String name = name_edt.getText().toString();
             roll_edt.setText(String.valueOf(Integer.parseInt(roll)+1));
-            roll_edt.setText("");
+            //roll_edt.setText("");
             listener.onClick(roll,name);
         });
         return builder.create();
@@ -70,14 +74,14 @@ public class MyDialog extends DialogFragment{
         builder.setView(view);
 
         TextView title = view.findViewById(R.id.titleDialog);
-        title.setText("Add New Team");
+        title.setText("Add New Training");
 
 
         EditText team_edt = view.findViewById(R.id.est01);
         EditText sport_edt = view.findViewById(R.id.edt02);
 
-        team_edt.setHint("Team Name");
-        sport_edt.setHint("Sport Name");
+        team_edt.setHint("Training Name");
+        sport_edt.setHint("Team Name");
         Button cancel = view.findViewById(R.id.cancel_btn);
         Button add = view.findViewById(R.id.add_btn);
 
