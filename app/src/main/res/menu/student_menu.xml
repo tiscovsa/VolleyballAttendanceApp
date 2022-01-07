@@ -2,5 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/add_student"
-        android:title="ADD PLAYER"/>
+        android:title="Add Player"/>
+    <item
+        android:id="@+id/show_Calendar"
+        android:title="Change Date"/>
 </menu>

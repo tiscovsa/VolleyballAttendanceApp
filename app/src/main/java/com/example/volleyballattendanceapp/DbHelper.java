@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     //team table
     private static final String TEAM_TABLE_NAME= "TEAM_TABLE";
@@ -31,15 +31,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //student table
     private static final String STUDENT_TABLE_NAME= "STUDENT_TABLE";
-    private static final String S_ID= "_SID";
-    private static final String STUDENT_NAME_KEY= "STUDENT NAME";
-    private static final String STUDENT_ROLL_KEY= "ROLL";
+    public static final String S_ID= "_SID";
+    public static final String STUDENT_NAME_KEY= "STUDENT_NAME";
+    public static final String STUDENT_ROLL_KEY= "ROLL";
 
     private static final String CREATE_STUDENT_TABLE =
-            "CREATE TABLE " + STUDENT_TABLE_NAME + "(" + S_ID +
-                    " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+            "CREATE TABLE " + STUDENT_TABLE_NAME +
+                    "( " +
+                    S_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     T_ID + " INTEGER NOT NULL, "+
-                    STUDENT_NAME_KEY + " ,TEXT NOT NULL," +
+                    STUDENT_NAME_KEY + " TEXT NOT NULL," +
                     STUDENT_ROLL_KEY + " INTEGER, " +
                     " FOREIGN KEY ( " + T_ID + ") REFERENCES " + TEAM_TABLE_NAME + "("+T_ID+")" +
                     ");";
@@ -57,7 +58,7 @@ public class DbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + STATUS_TABLE_NAME + "(" + STATUS_ID +
                     " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     S_ID + " INTEGER NOT NULL, "+
-                    DATE_KEY + " ,DATE NOT NULL," +
+                    DATE_KEY + " DATE NOT NULL," +
                     STATUS_KEY + "TEXT NOT NULL, " +
                     " UNIQUE (" + S_ID + ","+DATE_KEY+")," +
                     " FOREIGN KEY (" + S_ID +") REFERENCES " + STATUS_TABLE_NAME + "( "+S_ID+")" +
@@ -103,4 +104,45 @@ public class DbHelper extends SQLiteOpenHelper {
 
         return database.rawQuery(SELECT_TEAM_TABLE,null);
     }
+
+    int deleteClass(long tid){
+        SQLiteDatabase database = this.getReadableDatabase();
+        return database.delete(TEAM_TABLE_NAME,T_ID+"=?",new String[]{String.valueOf(tid)});
+    }
+
+    long updateTeam(long tid, String teamName,String sportName){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TEAM_NAME_KEY,teamName);
+        values.put(SPORT_NAME_KEY,sportName);
+
+        return database.update(TEAM_TABLE_NAME,values,T_ID+"=?",new String[]{String.valueOf(tid)});
+    }
+
+    long addStudent(long tid,int roll, String name){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(T_ID,tid);
+        values.put(STUDENT_ROLL_KEY,roll);
+        values.put(STUDENT_NAME_KEY,name);
+
+        return database.insert(STUDENT_TABLE_NAME,null,values);
+    }
+    Cursor getStudentTable(long tid){
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        return database.query(STUDENT_TABLE_NAME,null,T_ID+"=?",new String[]{String.valueOf(tid)},null,null,STUDENT_ROLL_KEY);
+    }
+
+    int deleteStudent(long sid){
+        SQLiteDatabase database = this.getReadableDatabase();
+        return database.delete(STUDENT_TABLE_NAME,S_ID+"=?",new String[]{String.valueOf(sid)});
+    }
+    long updateStudent(long sid, String name){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(STUDENT_NAME_KEY,name);
+        return database.update(STUDENT_TABLE_NAME,values,S_ID+"=?",new String[]{String.valueOf(sid)});
+    }
+
 }

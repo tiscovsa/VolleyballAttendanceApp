@@ -1,5 +1,6 @@
 package com.example.volleyballattendanceapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,6 +12,7 @@ import android.database.Cursor;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("teamName",teamItems.get(position).getTeamName());
         intent.putExtra("sportName",teamItems.get(position).getSportName());
         intent.putExtra("position",position);
+        intent.putExtra("tid",teamItems.get(position).getTid());
         startActivity(intent);
     }
 
@@ -102,5 +105,38 @@ public class MainActivity extends AppCompatActivity {
         TeamItem teamItem =  new TeamItem( teamName,sportName);
         teamItems.add(teamItem);
         classAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case 0:
+                showUpdateDialog(item.getGroupId());
+                break;
+            case 1:
+                deleteTeam(item.getGroupId());
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void showUpdateDialog(int position) {
+        MyDialog dialog = new MyDialog();
+        dialog.show(getSupportFragmentManager(),MyDialog.TEAM_UPDATE_DIALOG);
+        dialog.setListener((teamName,sportName)->updateTeam(position,teamName,sportName));
+
+    }
+
+    private void updateTeam(int position, String teamName, String sportName) {
+        dbHelper.updateTeam(teamItems.get(position).getTid(),teamName,sportName);
+        teamItems.get(position).setTeamName(teamName);
+        teamItems.get(position).setSportName(sportName);
+        classAdapter.notifyItemChanged(position);
+    }
+
+    private void deleteTeam(int position) {
+        dbHelper.deleteClass(teamItems.get(position).getTid());
+        teamItems.remove(position);
+        classAdapter.notifyItemRemoved(position);
     }
 }
