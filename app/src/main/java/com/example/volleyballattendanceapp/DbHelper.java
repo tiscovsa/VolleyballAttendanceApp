@@ -9,9 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.Optional;
+
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final int VERSION = 3;
+    private static final int VERSION = 2;
 
     //team table
     private static final String TEAM_TABLE_NAME= "TEAM_TABLE";
@@ -21,7 +23,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TEAM_TABLE =
             "CREATE TABLE " + TEAM_TABLE_NAME + "( " +
-                    T_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    T_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     TEAM_NAME_KEY + " TEXT NOT NULL, " +
                     SPORT_NAME_KEY + " TEXT NOT NULL, " +
                     "UNIQUE (" + TEAM_NAME_KEY + "," + SPORT_NAME_KEY + ")" +
@@ -50,18 +52,20 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //status table
     private static final String STATUS_TABLE_NAME= "STATUS_TABLE";
-    private static final String STATUS_ID= "_STATUS_ID";
-    private static final String DATE_KEY= "STATUS_DATE";
+    public static final String STATUS_ID= "_STATUS_ID";
+    public static final String DATE_KEY= "STATUS_DATE";
     private static final String STATUS_KEY= "STATUS";
 
     private static final String CREATE_STATUS_TABLE =
             "CREATE TABLE " + STATUS_TABLE_NAME + "(" + STATUS_ID +
-                    " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     S_ID + " INTEGER NOT NULL, "+
+                    T_ID + " INTEGER NOT NULL, "+
                     DATE_KEY + " DATE NOT NULL," +
                     STATUS_KEY + " TEXT NOT NULL, " +
                     " UNIQUE (" + S_ID + ","+DATE_KEY+")," +
-                    " FOREIGN KEY (" + S_ID +") REFERENCES " + STATUS_TABLE_NAME + "( "+S_ID+")" +
+                    " FOREIGN KEY (" + S_ID +") REFERENCES " + STATUS_TABLE_NAME + "( "+S_ID+")," +
+                    " FOREIGN KEY (" + T_ID +") REFERENCES " + TEAM_TABLE_NAME + "( "+T_ID+")" +
                     ");";
     private static final String DROP_STATUS_TABLE = "DROP TABLE IF EXISTS "+STATUS_TABLE_NAME;
     private static final String SELECT_STATUS_TABLE = "SELECT * FROM "+STATUS_TABLE_NAME;
@@ -144,10 +148,11 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(STUDENT_NAME_KEY,name);
         return database.update(STUDENT_TABLE_NAME,values,S_ID+"=?",new String[]{String.valueOf(sid)});
     }
-    long addStatus(long sid,String date, String status){
+    long addStatus(long sid,long tid,String date, String status){
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(S_ID,sid);
+        values.put(T_ID,tid);
         values.put(DATE_KEY,date);
         values.put(STATUS_KEY,status);
 
@@ -168,6 +173,11 @@ public class DbHelper extends SQLiteOpenHelper {
         if(cursor.moveToFirst())
             status = cursor.getString(cursor.getColumnIndex(STATUS_KEY));
         return status;
+    }
+    Cursor getDistinctMonths(long tid){
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        return database.query(STATUS_TABLE_NAME,new String[]{DATE_KEY},T_ID+"="+tid,null,"substr("+DATE_KEY+",4,7)",null,null);//01.04.2020
     }
 
 }

@@ -42,9 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         fab = findViewById(R.id.fab_main);
         fab.setOnClickListener(v-> showDialog());
-        
+
         loadData();
-        
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(classAdapter);
         classAdapter.setOnItemClickListener(position -> gotoItemActivity(position));
         setToolBar();
+
 
     }
 
@@ -104,7 +104,10 @@ public class MainActivity extends AppCompatActivity {
         long tid = dbHelper.addTeam(teamName,sportName);
         TeamItem teamItem =  new TeamItem( teamName,sportName);
         teamItems.add(teamItem);
+
         classAdapter.notifyDataSetChanged();
+        Intent reload = new Intent(MainActivity.this, MainActivity.class);
+        startActivity(reload);
     }
 
 

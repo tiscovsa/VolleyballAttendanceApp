@@ -101,8 +101,8 @@ public class MyDialog extends DialogFragment{
         EditText team_edt = view.findViewById(R.id.est01);
         EditText sport_edt = view.findViewById(R.id.edt02);
 
-        team_edt.setHint("Training Name");
-        sport_edt.setHint("Team Name");
+        team_edt.setHint("Team Name");
+        sport_edt.setHint("Sport Name");
         Button cancel = view.findViewById(R.id.cancel_btn);
         Button add = view.findViewById(R.id.add_btn);
         add.setText("Update");

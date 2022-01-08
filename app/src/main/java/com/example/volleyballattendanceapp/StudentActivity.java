@@ -48,6 +48,7 @@ public class StudentActivity extends AppCompatActivity {
 
         setToolBar();
         loadData();
+
         recyclerView = findViewById(R.id.student_recycler);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -105,7 +106,7 @@ public class StudentActivity extends AppCompatActivity {
         for(StudentItem studentItem : studentItems){
             String status = studentItem.getStatus();
             if(status!="P") status = "A";
-            long value = dbHelper.addStatus(studentItem.getSid(),calendar.getDate(),status);
+            long value = dbHelper.addStatus(studentItem.getSid(),tid,calendar.getDate(),status);
 
             if(value==1)dbHelper.updateStatus(studentItem.getSid(),calendar.getDate(),status);
         }
@@ -127,8 +128,33 @@ public class StudentActivity extends AppCompatActivity {
         if(menuItem.getItemId()==R.id.show_Calendar){
             showCalendar();
         }
+        if(menuItem.getItemId()==R.id.show_attendance_sheet){
+            openSheetList();
+        }
 
         return true;
+    }
+
+    private void openSheetList() {
+        long[] idArray = new long[studentItems.size()];
+        int[] rollArray = new int[studentItems.size()];
+        String[] nameArray = new String[studentItems.size()];
+
+        for(int i = 0;i<idArray.length;i++)
+            idArray[i] = studentItems.get(i).getSid();
+
+        for(int i = 0;i<rollArray.length;i++)
+            rollArray[i] = studentItems.get(i).getRoll();
+
+        for(int i = 0;i<nameArray.length;i++)
+            nameArray[i] = studentItems.get(i).getName();
+
+        Intent intent = new Intent(this,SheetListActivity.class);
+        intent.putExtra("tid",tid);
+        intent.putExtra("idArray",idArray);
+        intent.putExtra("rollArray",rollArray);
+        intent.putExtra("nameArray",nameArray);
+        startActivity(intent);
     }
 
     private void showCalendar() {
