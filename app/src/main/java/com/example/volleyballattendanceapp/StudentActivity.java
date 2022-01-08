@@ -38,7 +38,6 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
-        subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
         calendar = new MyCalendar();
         dbHelper = new DbHelper(this);
         Intent intent = getIntent();
@@ -56,7 +55,7 @@ public class StudentActivity extends AppCompatActivity {
         adapter = new StudentAdapter(this,studentItems);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(position->changedStatus(position));
-
+        loadStatusData();
     }
 
     private void loadData() {
@@ -88,18 +87,38 @@ public class StudentActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.title_toolbar);
+        subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
 
         ImageButton back = toolbar.findViewById(R.id.back);
         ImageButton save = toolbar.findViewById(R.id.save);
+        save.setOnClickListener(v->saveStatus());
 
         title.setText(teamName);
-        subtitle.setText(sportName);
+        subtitle.setText(sportName+" | "+calendar.getDate());
 
         back.setOnClickListener(v->onBackPressed());
         toolbar.inflateMenu(R.menu.student_menu);
         toolbar.setOnMenuItemClickListener(menuItem->onMenuItemClick(menuItem));
     }
 
+    private void saveStatus() {
+        for(StudentItem studentItem : studentItems){
+            String status = studentItem.getStatus();
+            if(status!="P") status = "A";
+            long value = dbHelper.addStatus(studentItem.getSid(),calendar.getDate(),status);
+
+            if(value==1)dbHelper.updateStatus(studentItem.getSid(),calendar.getDate(),status);
+        }
+    }
+
+    private void loadStatusData(){
+        for(StudentItem studentItem : studentItems){
+            String status = dbHelper.getStatus(studentItem.getSid(),calendar.getDate());
+            if(status!=null) studentItem.setStatus(status);
+            else studentItem.setStatus("");
+        }
+        adapter.notifyDataSetChanged();
+    }
     private boolean onMenuItemClick(MenuItem menuItem) {
 
         if(menuItem.getItemId()==R.id.add_student){
@@ -119,6 +138,8 @@ public class StudentActivity extends AppCompatActivity {
 
     private void OnCalendarClicked(int year, int month, int day) {
         calendar.setDate(year,month,day);
+        subtitle.setText(sportName+" | "+calendar.getDate());
+        loadStatusData();
     }
 
     private void showAddStudentDialog() {
@@ -161,7 +182,7 @@ public class StudentActivity extends AppCompatActivity {
     }
 
     private void deleteStudent(int position) {
-        dbHelper.deleteClass(studentItems.get(position).getSid());
+        dbHelper.deleteStudent(studentItems.get(position).getSid());
         studentItems.remove(position);
         adapter.notifyItemRemoved(position);
     }
