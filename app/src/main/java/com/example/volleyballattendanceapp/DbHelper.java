@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -157,6 +159,16 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(STATUS_KEY,status);
 
         return database.insert(STATUS_TABLE_NAME,null,values);
+    }
+    int deleteStatus(StudentItem studentItem,String date){
+        ContentValues values;
+        SQLiteDatabase database = this.getReadableDatabase();
+        values = new ContentValues();
+        Log.i("1234567890","clear " +studentItem.getName());
+        values.put(STATUS_KEY,studentItem.getStatus());
+        String whereClause = DATE_KEY +"='"+date+"' AND "+S_ID+"="+studentItem.getSid();
+        return database.delete(STATUS_TABLE_NAME,whereClause,null);
+
     }
     long updateStatus(long sid,String date, String status){
         SQLiteDatabase database = this.getWritableDatabase();

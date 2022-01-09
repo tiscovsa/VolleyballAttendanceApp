@@ -33,7 +33,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         this.context = context;
     }
 
-    public static class StudentViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    public static class StudentViewHolder extends RecyclerView.ViewHolder {
         TextView roll;
         TextView name;
         TextView status;
@@ -45,15 +45,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             status = itemView.findViewById(R.id.status);
             cardView = itemView.findViewById(R.id.cardview);
             itemView.setOnClickListener(v->onItemClickListener.onClick(getAdapterPosition()));
-            itemView.setOnCreateContextMenuListener(this);
         }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.add(getAdapterPosition(),0,0,"Edit");
-            menu.add(getAdapterPosition(),1,0,"Delete");
-
-        }
     }
 
     @NonNull

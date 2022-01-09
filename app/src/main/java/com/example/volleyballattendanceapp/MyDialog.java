@@ -24,6 +24,7 @@ public class MyDialog extends DialogFragment{
     private OnClickListener listener;
     private int roll;
     private String name;
+    private DbHelper dbHelper;
 
     public MyDialog(int roll, String name) {
 
@@ -120,29 +121,25 @@ public class MyDialog extends DialogFragment{
 
     private Dialog getAddStudentDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog,null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.student_dialog,null);
         builder.setView(view);
 
         TextView title = view.findViewById(R.id.titleDialog);
         title.setText("Add New Player");
 
 
-        EditText roll_edt = view.findViewById(R.id.est01);
-        EditText name_edt = view.findViewById(R.id.edt02);
+        EditText name_edt = view.findViewById(R.id.est01);
 
-        roll_edt.setHint("Roll");
         name_edt.setHint("Name");
         Button cancel = view.findViewById(R.id.cancel_btn);
         Button add = view.findViewById(R.id.add_btn);
 
         cancel.setOnClickListener( v-> dismiss());
         add.setOnClickListener( v-> {
-            String roll = roll_edt.getText().toString();
             String name = name_edt.getText().toString();
-            roll_edt.setText(String.valueOf(Integer.parseInt(roll)+1));
             name_edt.setText("");
-            //roll_edt.setText("");
-            listener.onClick(roll,name);
+
+            listener.onClick("",name);
         });
         return builder.create();
     }

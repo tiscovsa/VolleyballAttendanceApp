@@ -73,17 +73,6 @@ public class StudentActivity extends AppCompatActivity {
         }
         cursor.close();
     }
-
-    private void changedStatus(int position) {
-        String status = studentItems.get(position).getStatus();
-
-        if(status.equals("P")) status = "A";
-        else status = "P";
-
-        studentItems.get(position).setStatus(status);
-        adapter.notifyItemChanged(position);
-    }
-
     private void setToolBar() {
 
         toolbar = findViewById(R.id.toolbar);
@@ -100,6 +89,16 @@ public class StudentActivity extends AppCompatActivity {
         back.setOnClickListener(v->onBackPressed());
         toolbar.inflateMenu(R.menu.student_menu);
         toolbar.setOnMenuItemClickListener(menuItem->onMenuItemClick(menuItem));
+    }
+
+    private void changedStatus(int position) {
+        String status = studentItems.get(position).getStatus();
+
+        if(status.equals("P")) status = "A";
+        else status = "P";
+
+        studentItems.get(position).setStatus(status);
+        adapter.notifyItemChanged(position);
     }
 
     private void saveStatus() {
@@ -120,6 +119,13 @@ public class StudentActivity extends AppCompatActivity {
         }
         adapter.notifyDataSetChanged();
     }
+    private void clearStatus(){
+        for(int i = 0;i<studentItems.size();i++){
+            StudentItem studentItem = studentItems.get(i);
+            dbHelper.deleteStatus(studentItem,calendar.getDate());
+        }
+        this.recreate();
+    }
     private boolean onMenuItemClick(MenuItem menuItem) {
 
         if(menuItem.getItemId()==R.id.add_student){
@@ -130,6 +136,9 @@ public class StudentActivity extends AppCompatActivity {
         }
         if(menuItem.getItemId()==R.id.show_attendance_sheet){
             openSheetList();
+        }
+        if(menuItem.getItemId()==R.id.clear){
+            clearStatus();
         }
 
         return true;
@@ -154,6 +163,7 @@ public class StudentActivity extends AppCompatActivity {
         intent.putExtra("idArray",idArray);
         intent.putExtra("rollArray",rollArray);
         intent.putExtra("nameArray",nameArray);
+        intent.putExtra("position",position);
         startActivity(intent);
     }
 
@@ -175,7 +185,7 @@ public class StudentActivity extends AppCompatActivity {
     }
 
     private void addStudent(String roll_string, String name) {
-        int roll = Integer.parseInt(roll_string);
+        int roll = studentItems.size()+1;
         long sid = dbHelper.addStudent(tid,roll,name);
         StudentItem studentItem = new StudentItem(sid,roll,name);
         studentItems.add(studentItem);
