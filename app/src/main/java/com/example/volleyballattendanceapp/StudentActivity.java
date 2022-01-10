@@ -1,19 +1,25 @@
 package com.example.volleyballattendanceapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +31,8 @@ public class StudentActivity extends AppCompatActivity {
     private String teamName;
     private String sportName;
     private int position;
+    ExtendedFloatingActionButton save;
+    ExtendedFloatingActionButton discard;
     private RecyclerView recyclerView;
     private StudentAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -49,6 +57,13 @@ public class StudentActivity extends AppCompatActivity {
         setToolBar();
         loadData();
 
+        save = findViewById(R.id.save);
+        discard = findViewById(R.id.discard_btn);
+        save.setVisibility(View.INVISIBLE);
+        discard.setVisibility(View.INVISIBLE);
+        save.setOnClickListener(v-> saveStatus());
+        discard.setOnClickListener(v-> discardStatus());
+
         recyclerView = findViewById(R.id.student_recycler);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -59,9 +74,12 @@ public class StudentActivity extends AppCompatActivity {
         loadStatusData();
     }
 
+    private void discardStatus() {
+        this.recreate();
+    }
+
     private void loadData() {
         Cursor cursor = dbHelper.getStudentTable(tid);
-        Log.i("1234567890","loadData" +tid);
         studentItems.clear();
         while(cursor.moveToNext()){
             long sid = cursor.getLong(cursor.getColumnIndex(DbHelper.S_ID));
@@ -80,8 +98,6 @@ public class StudentActivity extends AppCompatActivity {
         subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
 
         ImageButton back = toolbar.findViewById(R.id.back);
-        ImageButton save = toolbar.findViewById(R.id.save);
-        save.setOnClickListener(v->saveStatus());
 
         title.setText(teamName);
         subtitle.setText(sportName+" | "+calendar.getDate());
@@ -95,20 +111,35 @@ public class StudentActivity extends AppCompatActivity {
         String status = studentItems.get(position).getStatus();
 
         if(status.equals("P")) status = "A";
+        else if(status.equals("A")) status = "L";
         else status = "P";
 
         studentItems.get(position).setStatus(status);
         adapter.notifyItemChanged(position);
+        save.setVisibility(View.VISIBLE);
+        discard.setVisibility(View.VISIBLE);
     }
 
     private void saveStatus() {
-        for(StudentItem studentItem : studentItems){
-            String status = studentItem.getStatus();
-            if(status!="P") status = "A";
-            long value = dbHelper.addStatus(studentItem.getSid(),tid,calendar.getDate(),status);
+        for (StudentItem studentItem : studentItems) {
+            if(dbHelper.getStatus(studentItem.getSid(),calendar.getDate()) == null){
+                String status = studentItem.getStatus();
+                if (status == "") status = "A";
+                long value = dbHelper.addStatus(studentItem.getSid(), tid, calendar.getDate(), status);
 
-            if(value==1)dbHelper.updateStatus(studentItem.getSid(),calendar.getDate(),status);
+                if (value == 1) {
+                    dbHelper.updateStatus(studentItem.getSid(), calendar.getDate(), status);
+                }
+            }
+            else{
+                String status = studentItem.getStatus();
+                if (status == "") status = "A";
+                dbHelper.updateStatus(studentItem.getSid(), calendar.getDate(), status);
+            }
+
         }
+        save.setVisibility(View.INVISIBLE);
+        discard.setVisibility(View.INVISIBLE);
     }
 
     private void loadStatusData(){
@@ -181,10 +212,13 @@ public class StudentActivity extends AppCompatActivity {
     private void showAddStudentDialog() {
         MyDialog dialog = new MyDialog();
         dialog.show(getSupportFragmentManager(),MyDialog.STUDENT_ADD_DIALOG);
-        dialog.setListener((roll,name)->addStudent(roll,name));
+        dialog.setListener((roll,name)->addStudent(name));
     }
 
-    private void addStudent(String roll_string, String name) {
+    private void addStudent(String name) {
+        if(name.length() == 0){
+            name = "The nameless one";
+        }
         int roll = studentItems.size()+1;
         long sid = dbHelper.addStudent(tid,roll,name);
         StudentItem studentItem = new StudentItem(sid,roll,name);
@@ -219,7 +253,19 @@ public class StudentActivity extends AppCompatActivity {
 
     private void deleteStudent(int position) {
         dbHelper.deleteStudent(studentItems.get(position).getSid());
+        int rollDeleted = studentItems.get(position).getRoll();
         studentItems.remove(position);
+        for(int i = 0;i< studentItems.size();i++){
+            if(studentItems.get(i).getRoll()>rollDeleted){
+                studentItems.get(i).setRoll(studentItems.get(i).getRoll()-1);
+                updateStudentRoll(studentItems.get(i));
+            }
+        }
+        this.recreate();
         adapter.notifyItemRemoved(position);
+    }
+
+    private void updateStudentRoll(StudentItem studentItem) {
+        dbHelper.updateStudentRoll(studentItem.getSid(),studentItem.getRoll());
     }
 }

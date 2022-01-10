@@ -150,6 +150,12 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(STUDENT_NAME_KEY,name);
         return database.update(STUDENT_TABLE_NAME,values,S_ID+"=?",new String[]{String.valueOf(sid)});
     }
+    long updateStudentRoll(long sid, int roll){
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(STUDENT_ROLL_KEY,roll);
+        return database.update(STUDENT_TABLE_NAME,values,S_ID+"=?",new String[]{String.valueOf(sid)});
+    }
     long addStatus(long sid,long tid,String date, String status){
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();

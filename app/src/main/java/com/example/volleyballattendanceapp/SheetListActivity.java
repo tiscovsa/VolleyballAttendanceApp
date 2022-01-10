@@ -35,7 +35,6 @@ public class SheetListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.sheet_recycler);
 
         tid= getIntent().getLongExtra("tid",-1);
-        Log.i("1234567890","onCreate: " +tid);
         loadListItems();
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
@@ -53,12 +52,10 @@ public class SheetListActivity extends AppCompatActivity {
         TextView title = toolbar.findViewById(R.id.title_toolbar);
         TextView subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
         ImageButton back = toolbar.findViewById(R.id.back);
-        ImageButton save = toolbar.findViewById(R.id.save);
 
         title.setText("Months");
 
         subtitle.setVisibility(View.GONE);
-        save.setVisibility(View.INVISIBLE);
         back.setOnClickListener(v->onBackPressed());
     }
     private void openActivitySheetPosition(int position) {
@@ -72,7 +69,6 @@ public class SheetListActivity extends AppCompatActivity {
         intent.putExtra("rollArray",rollArray);
         intent.putExtra("nameArray",nameArray);
         intent.putExtra("month",month);
-        Log.i("1234567890","the month " +listItems.get(position).getDate());
 
         startActivity(intent);
 

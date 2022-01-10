@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -156,11 +157,11 @@ public class MyDialog extends DialogFragment{
         EditText team_edt = view.findViewById(R.id.est01);
         EditText sport_edt = view.findViewById(R.id.edt02);
 
-        team_edt.setHint("Training Name");
-        sport_edt.setHint("Team Name");
+
+        team_edt.setHint("Group Name");
+        sport_edt.setHint("Group Activity");
         Button cancel = view.findViewById(R.id.cancel_btn);
         Button add = view.findViewById(R.id.add_btn);
-
         cancel.setOnClickListener( v-> dismiss());
         add.setOnClickListener( v-> {
             String teamName = team_edt.getText().toString();
@@ -168,6 +169,7 @@ public class MyDialog extends DialogFragment{
            listener.onClick(teamName,sportName);
             dismiss();
         });
+
         return builder.create();
     }
 }

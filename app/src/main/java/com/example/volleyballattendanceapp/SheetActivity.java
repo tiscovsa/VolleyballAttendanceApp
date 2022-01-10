@@ -39,13 +39,11 @@ public class SheetActivity extends AppCompatActivity {
         TextView title = toolbar.findViewById(R.id.title_toolbar);
         TextView subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
         ImageButton back = toolbar.findViewById(R.id.back);
-        ImageButton save = toolbar.findViewById(R.id.save);
         month = getIntent().getStringExtra("month");
         String monthString = getMonth(month.substring(0,2));
 
         title.setText("Review of " + monthString);
         subtitle.setVisibility(View.GONE);
-        save.setVisibility(View.INVISIBLE);
 
         back.setOnClickListener(v->onBackPressed());
     }
@@ -93,13 +91,11 @@ public class SheetActivity extends AppCompatActivity {
         String[] nameArray = getIntent().getStringArrayExtra("nameArray");
         ArrayList<Integer> daysWithTraining= new ArrayList<>();
         month = getIntent().getStringExtra("month");
-        Log.i("1234567890","the month on Create " +month);
 
         int DAY_IN_MONTH = getDayInMonth(month);
 
         //row setup
         int rowSize = idArray.length + 1;
-        Log.i("1234567890","rowsize " +rowSize);
 
         TableRow[] rows = new TableRow[rowSize];
         TextView[] roll_tvs = new TextView[rowSize];
@@ -138,7 +134,6 @@ public class SheetActivity extends AppCompatActivity {
 
         for(int i = 1; dateTraining != datesWithTraining.size(); i++){
             if(i == datesWithTraining.get(dateTraining)){
-                Log.i("1234567890","DAyWithTraining " +datesWithTraining.get(dateTraining));
                 status_tvs[0][i].setText(String.valueOf(i));
                 status_tvs[0][i].setTextColor(Color.parseColor("#000000"));
                 status_tvs[0][i].setTypeface(status_tvs[0][i].getTypeface(), Typeface.BOLD);
@@ -178,18 +173,19 @@ public class SheetActivity extends AppCompatActivity {
             for(int j = 0; j < datesWithTraining.size(); j++){
 
                 status_tvs[i][datesWithTraining.get(j)].setPadding(16, 16, 16, 16);
-                //Log.i("1234567890","loadData " +status_tvs[i][j].getText().toString().charAt(0));
 
                 if (status_tvs[i][datesWithTraining.get(j)].getText().toString().length() == 1 && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) == 'A') {
                     status_tvs[i][datesWithTraining.get(j)].setTextColor(Color.parseColor("#FF0000"));
-                    Log.i("1234567890", "colored " + (status_tvs[i][datesWithTraining.get(j)].getText()));
                 }
                 if (status_tvs[i][datesWithTraining.get(j)].getText().toString().length() == 1 && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) == 'P') {
                     status_tvs[i][datesWithTraining.get(j)].setTextColor(Color.parseColor("#006400"));
-                    Log.i("1234567890", "colored " + (status_tvs[i][datesWithTraining.get(j)].getText()));
                 }
-                if (status_tvs[i][datesWithTraining.get(j)].getText().toString().length() == 1 && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) != 'P' && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) != 'A') {
-                    String correctDate = "0" + status_tvs[i][datesWithTraining.get(j)].getText();
+                if (status_tvs[i][datesWithTraining.get(j)].getText().toString().length() == 1 && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) == 'L') {
+                    status_tvs[i][datesWithTraining.get(j)].setTextColor(Color.parseColor("#FFD801"));
+                }
+                if (status_tvs[i][datesWithTraining.get(j)].getText().toString().length() == 1 && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) != 'P' &&
+                        status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) != 'A' && status_tvs[i][datesWithTraining.get(j)].getText().charAt(0) != 'L') {
+                    String correctDate = "0" + status_tvs[i][datesWithTraining.get(j)].getText()+"."+getMonthNumber(month);
                     status_tvs[i][datesWithTraining.get(j)].setText(correctDate);
                 }
                 rows[i].addView(status_tvs[i][datesWithTraining.get(j)]);
@@ -204,12 +200,14 @@ public class SheetActivity extends AppCompatActivity {
 
         }
 
+    private String getMonthNumber(String month) {
+        String monthIndex = month.substring(0,2);
+        return  monthIndex;
+    }
 
 
     private int getDayInMonth(String month) {
-        Log.i("1234567890","the month " +month);
         int monthIndex = valueOf(month.substring(0,1));
-        Log.i("1234567890","the monthIndex " +monthIndex);
         int year =  valueOf(month.substring(4));
 
         Calendar calendar = Calendar.getInstance();

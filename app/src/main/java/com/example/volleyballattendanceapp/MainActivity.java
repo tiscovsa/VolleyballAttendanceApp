@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,12 +77,10 @@ public class MainActivity extends AppCompatActivity {
         TextView title = toolbar.findViewById(R.id.title_toolbar);
         TextView subtitle = toolbar.findViewById(R.id.subtitle_toolbar);
         ImageButton back = toolbar.findViewById(R.id.back);
-        ImageButton save = toolbar.findViewById(R.id.save);
 
         title.setText("Attendance App");
         subtitle.setVisibility(View.GONE);
         back.setVisibility(View.INVISIBLE);
-        save.setVisibility(View.INVISIBLE);
     }
 
     private void gotoItemActivity(int position) {
@@ -106,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
         teamItems.add(teamItem);
 
         classAdapter.notifyDataSetChanged();
-        Intent reload = new Intent(MainActivity.this, MainActivity.class);
-        startActivity(reload);
+        this.recreate();
+        //Intent reload = new Intent(MainActivity.this, MainActivity.class);
+        //startActivity(reload);
     }
 
 

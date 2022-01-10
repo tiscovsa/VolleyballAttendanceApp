@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="present">#3300C500</color>
     <color name="absent">#33FF0000</color>
+    <color name="late">#FFDB58</color>
     <color name="normal">#FFFFFF</color>
     <color name="colorAccent">#027CFF</color>
 </resources>

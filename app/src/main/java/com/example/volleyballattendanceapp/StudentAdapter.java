@@ -33,7 +33,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         this.context = context;
     }
 
-    public static class StudentViewHolder extends RecyclerView.ViewHolder {
+    public static class StudentViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView roll;
         TextView name;
         TextView status;
@@ -45,6 +45,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             status = itemView.findViewById(R.id.status);
             cardView = itemView.findViewById(R.id.cardview);
             itemView.setOnClickListener(v->onItemClickListener.onClick(getAdapterPosition()));
+            itemView.setOnCreateContextMenuListener(this);
+        }
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.add(getAdapterPosition(),0,0,"EDIT");
+            menu.add(getAdapterPosition(),1,0,"DELETE");
         }
 
     }
@@ -70,6 +75,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             return Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(context,R.color.present)));
         else if(status.equals("A"))
             return Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(context,R.color.absent)));
+        else if(status.equals("L"))
+            return Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(context,R.color.late)));
 
         return Color.parseColor("#"+Integer.toHexString(ContextCompat.getColor(context,R.color.normal)));
     }
