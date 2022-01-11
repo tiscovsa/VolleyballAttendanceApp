@@ -7,4 +7,10 @@
     <color name="late">#FFDB58</color>
     <color name="normal">#FFFFFF</color>
     <color name="colorAccent">#027CFF</color>
+    <color name="color_one">#fb7268</color>
+    <color name="color_white">#ededf2</color>
+    <color name="color_two">#E3E0E0</color>
+    <color name="Late">#FFA726</color>
+    <color name="Present">#66BB6A</color>
+    <color name="Absent">#EF5350</color>
 </resources>

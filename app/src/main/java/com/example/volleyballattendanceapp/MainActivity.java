@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showUpdateDialog(int position) {
-        MyDialog dialog = new MyDialog();
+        MyDialog dialog = new MyDialog(teamItems.get(position).getTeamName(),teamItems.get(position).getSportName());
         dialog.show(getSupportFragmentManager(),MyDialog.TEAM_UPDATE_DIALOG);
         dialog.setListener((teamName,sportName)->updateTeam(position,teamName,sportName));
 

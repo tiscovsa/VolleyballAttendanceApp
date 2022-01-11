@@ -25,6 +25,8 @@ public class MyDialog extends DialogFragment{
     private OnClickListener listener;
     private int roll;
     private String name;
+    private String teamName;
+    private String sportName;
     private DbHelper dbHelper;
 
     public MyDialog(int roll, String name) {
@@ -33,6 +35,11 @@ public class MyDialog extends DialogFragment{
         this.name = name;
     }
 
+    public MyDialog(String teamName,String sportName){
+        this.teamName = teamName;
+        this.sportName = sportName;
+
+    }
     public MyDialog(){
 
     }
@@ -103,11 +110,13 @@ public class MyDialog extends DialogFragment{
         EditText team_edt = view.findViewById(R.id.est01);
         EditText sport_edt = view.findViewById(R.id.edt02);
 
-        team_edt.setHint("Team Name");
-        sport_edt.setHint("Sport Name");
+        team_edt.setHint("Group Name");
+        sport_edt.setHint("Group Activity");
         Button cancel = view.findViewById(R.id.cancel_btn);
         Button add = view.findViewById(R.id.add_btn);
         add.setText("Update");
+        team_edt.setText(teamName);
+        sport_edt.setText(sportName);
 
         cancel.setOnClickListener( v-> dismiss());
         add.setOnClickListener( v-> {
