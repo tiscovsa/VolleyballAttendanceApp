@@ -104,7 +104,7 @@ public class MyDialog extends DialogFragment{
         builder.setView(view);
 
         TextView title = view.findViewById(R.id.titleDialog);
-        title.setText("Update Training");
+        title.setText("Update Group");
 
 
         EditText team_edt = view.findViewById(R.id.est01);
@@ -160,7 +160,7 @@ public class MyDialog extends DialogFragment{
         builder.setView(view);
 
         TextView title = view.findViewById(R.id.titleDialog);
-        title.setText("Add New Training");
+        title.setText("Add New Group");
 
 
         EditText team_edt = view.findViewById(R.id.est01);

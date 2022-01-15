@@ -24,6 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.mongodb.App;
+import io.realm.mongodb.AppConfiguration;
+
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     RecyclerView recyclerView;
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -106,8 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         classAdapter.notifyDataSetChanged();
         this.recreate();
-        //Intent reload = new Intent(MainActivity.this, MainActivity.class);
-        //startActivity(reload);
     }
 
 

@@ -158,6 +158,7 @@ public class SheetActivity extends AppCompatActivity {
                 if(day.length()==1) day = "0"+day;
                 String date = day+"."+month;
                 String status = dbHelper.getStatus(idArray[i-1],date);
+                Log.i("123","id "+idArray[i-1]);
                 status_tvs[i][datesWithTraining.get(j)].setText(status);
             }
 
@@ -165,6 +166,7 @@ public class SheetActivity extends AppCompatActivity {
         //filling
         for(int i = 0; i < rowSize; i++){
             rows[i] = new TableRow(this);
+            rows[i].setMinimumHeight(90);
 
             if(i % 2 == 0)
                 rows[i].setBackgroundColor(Color.parseColor("#EEEEEE"));
@@ -180,10 +182,14 @@ public class SheetActivity extends AppCompatActivity {
             rows[i].setClickable(true);
             rows[i].setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    int position = Integer.valueOf(v.getId())-1;
-                    sid = idArray[position];
-                    name = name_tvs[v.getId()].getText().toString();
-                    openPersonalDataActivity(sid,name);
+                    if(Integer.valueOf(v.getId()) != 0)
+                    {
+                        int position = Integer.valueOf(v.getId()) - 1;
+                        sid = idArray[position];
+                        name = name_tvs[v.getId()].getText().toString();
+                        openPersonalDataActivity(sid, name);
+                    }
+
                 }
             });
             for(int j = 0; j < datesWithTraining.size(); j++){

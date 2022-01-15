@@ -63,12 +63,12 @@ public class PersonalDataActivity extends AppCompatActivity {
                 new PieModel(
                         "Present",
                         Integer.parseInt(tvPresent.getText().toString()),
-                        Color.parseColor("#FFA726")));
+                        Color.parseColor("#66BB6A")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Late",
                         Integer.parseInt(tvLate.getText().toString()),
-                        Color.parseColor("#66BB6A")));
+                        Color.parseColor("#FFA726")));
         pieChart.addPieSlice(
                 new PieModel(
                         "Absent",
@@ -85,12 +85,14 @@ public class PersonalDataActivity extends AppCompatActivity {
             String day = datesWithTraining.get(i).toString();
             if(day.length()==1)
                 day = "0"+day;
-            String date = datesWithTraining.get(i).toString()+ "." + month;
+            String date = day+ "." + month;
             String status = dbHelper.getStatus(sid,date);
             if(status.charAt(0) == 'P'){
+                statusArray[PRESENT]++;
             }
             if(status.charAt(0) == 'L'){
                 statusArray[LATE]++;
+                Log.i("123","late " + statusArray[LATE]);
             }
             if(status.charAt(0) == 'A'){
                 statusArray[ABSENT]++;
